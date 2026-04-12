@@ -17,3 +17,16 @@ Key concepts demonstrated:
 * Plugin architecture with duck typing
 * Clean and modular system design
 
+
+## data_processor.py 
+
+This file implements a modular data processing system using object-oriented design and abstract base classes. It defines a common interface for handling different types of data while allowing each processor to apply its own validation and transformation logic.
+
+The system supports processing:
+
+Numeric data
+Text data
+Structured log data
+
+All processors follow a unified workflow:
+validate → ingest → store → output (FIFO)
