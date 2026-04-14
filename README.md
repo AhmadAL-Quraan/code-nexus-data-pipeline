@@ -31,5 +31,5 @@ Structured log data
 All processors follow a unified workflow:
 validate → ingest → store → output (FIFO)
 
-![Data Processor Workflow](data_stream_class_diagram.jpeg)
+![Data Processor Workflow](pic/data_stream_class_diagram.jpeg)
 
