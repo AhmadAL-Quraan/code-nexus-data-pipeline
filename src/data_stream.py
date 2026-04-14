@@ -1,14 +1,15 @@
 from abc import ABC, abstractmethod
 from typing import Any
+
 # Allowed standard library imports: abc, collections, typing
 
 
 class DataProcessor(ABC):
     queue: list
-    counter: int 
+    counter: int
 
     def __init__(self) -> None:
-        self.queue = list() 
+        self.queue = list()
         self.counter = 0
 
     @abstractmethod
@@ -32,12 +33,14 @@ class DataProcessor(ABC):
 
 
 class NumericProcessor(DataProcessor):
-
     def validate(self, data: Any) -> bool:
         if isinstance(data, (int, float)):
             return True
-        # all --> return True if all elements of the iterable are true (or if the iterable is empty).
-        if isinstance(data, list) and all(isinstance(i, (int, float)) for i in data):
+
+        true: bool = (
+            True if all(isinstance(i, (int, float)) for i in data) else False
+        )
+        if isinstance(data, list) and true:
             return True
         return False
 
@@ -58,7 +61,6 @@ class NumericProcessor(DataProcessor):
 
 
 class TextProcessor(DataProcessor):
-
     def validate(self, data: Any) -> bool:
         if isinstance(data, str):
             return True
@@ -83,40 +85,55 @@ class TextProcessor(DataProcessor):
 
 
 class LogProcessor(DataProcessor):
-
     def validate(self, data: Any) -> bool:
         if isinstance(data, dict):
-            if all(isinstance(key, str) and isinstance(value, str) for key, value in data.items()):
-                    return True 
+            if all(
+                isinstance(key, str) and isinstance(value, str)
+                for key, value in data.items()
+            ):
+                return True
         if isinstance(data, list):
             for item in data:
                 if isinstance(item, dict):
-                    if  all(isinstance(key, str) and isinstance(value, str) for key, value in item.items()):
-                        return True 
+                    if all(
+                        isinstance(key, str) and isinstance(value, str)
+                        for key, value in item.items()
+                    ):
+                        return True
 
         return False
 
     def ingest(self, data: dict[str, str] | list[dict[str, str]]) -> None:
-        try: 
+        try:
             if self.validate(data):
-             if isinstance(data, dict):
-                for key, value in data.items():
-                    self.queue.append((self.counter, f"{str(key)}: {str(value)}"))
-                    self.counter += 1
-             if isinstance(data, list):
-                for i in data:
+                if isinstance(data, dict):
+                    for key, value in data.items():
+                        self.queue.append(
+                            (
+                                self.counter,
+                                f"\
+{str(key)}: {str(value)}",
+                            )
+                        )
+                        self.counter += 1
+                if isinstance(data, list):
+                    for i in data:
+                        log_level = i.get("log_level")
+                        log_message = i.get("log_message")
 
-                    log_level = i.get('log_level')
-                    log_message = i.get('log_message')
+                        self.queue.append(
+                            (
+                                self.counter,
+                                f"\
+{log_level}: {log_message}",
+                            )
+                        )
 
-                    self.queue.append((self.counter, f"{log_level}: {log_message}"))
-                    
-                    self.counter += 1
+                        self.counter += 1
 
             else:
-             raise ValueError(
-                f"Invalid data: {data}. The key, value in dict must be string."
-            )
+                raise ValueError(f"Invalid data: {data}. \
+The key, value in dict must be string.")
         except ValueError as e:
             print(f"Got exception: {e}")
 
@@ -126,9 +143,9 @@ if __name__ == "__main__":
 
     print("Testing Numeric Processor...")
     numeric_processor = NumericProcessor()
-    print(f"Trying to validate data '42':", end=" ")
+    print("Trying to validate data '42':", end=" ")
     print(numeric_processor.validate(42))
-    print(f"Trying to validate data 'Hello':", end=" ")
+    print("Trying to validate data 'Hello':", end=" ")
     print(numeric_processor.validate("Hello"))
     print("Test invalid ingestion of string 'foo' without prior validation:")
     numeric_processor.ingest("foo")
@@ -157,8 +174,12 @@ if __name__ == "__main__":
     print("Testing Log Processor...")
     log_processor = LogProcessor()
 
-    print(f"Trying to validate input 'Hello': {log_processor.validate("Hello")}")
-    list3 = [{'log_level': 'NOTICE', 'log_message':'Connection to server'}, {'log_level': 'ERROR', 'log_message':'Unauthorized access!!'}]
+    print(f"Trying \
+to validate input 'Hello': {log_processor.validate('Hello')}")
+    list3 = [
+        {"log_level": "NOTICE", "log_message": "Connection to server"},
+        {"log_level": "ERROR", "log_message": "Unauthorized access!!"},
+    ]
     print(f"Processing data: {list3}")
     log_processor.ingest(list3)
     print("Extracting 2 values...")
