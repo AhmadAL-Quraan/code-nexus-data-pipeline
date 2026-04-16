@@ -1,4 +1,3 @@
-
 from abc import ABC, abstractmethod
 from typing import Any
 
@@ -135,29 +134,52 @@ The key, value in dict must be string.")
             print(f"Got exception: {e}")
 
 
+if __name__ == "__main__":
+    print("=== Code Nexus - Data Processor ===\n")
 
-class DataStream:
-    def __init__(self) -> None:
-        self.processors: list[DataProcessor] = []
-    def register_processor(self, proc:DataProcessor):
-        self.processors.append(proc)
-    
-    def process_stream(self, stream: list[Any]):
-        for data in stream:
-           handle = False 
-           try: 
-            for proc in self.processors:
-                if proc.validate(data):
-                    proc.ingest(data)
-                    handle = True 
-            if not handle:
-                    raise ValueError(f"Can't process element in stream: {data}")
-           except Exception as e:
-                 print(f"DataStream error - {e}")
+    print("Testing Numeric Processor...")
+    numeric_processor = NumericProcessor()
+    print("Trying to validate data '42':", end=" ")
+    print(numeric_processor.validate(42))
+    print("Trying to validate data 'Hello':", end=" ")
+    print(numeric_processor.validate("Hello"))
+    print("Test invalid ingestion of string 'foo' without prior validation:")
+    numeric_processor.ingest("foo")
+    list1 = [1, 2, 3, 4, 5]
+    print(f"Processing data: {list1}")
+    numeric_processor.ingest(list1)
+    value1 = numeric_processor.output()
+    print(f"Numeric value {value1[0]}: {value1[1]}")
+    value1 = numeric_processor.output()
+    print(f"Numeric value {value1[0]}: {value1[1]}")
+    value1 = numeric_processor.output()
+    print(f"Numeric value {value1[0]}: {value1[1]}")
 
-        
-            
+    print()
+    print("Testing Text Processor...")
+    text_processor = TextProcessor()
+    print(f"Trying to validate input '42': {text_processor.validate(42)}")
+    list2 = ["Hello", "Nexus", "World"]
+    print(f"Processing data: {list2}")
+    print("Extracting 1 value...")
+    text_processor.ingest(list2)
+    value2 = text_processor.output()
 
-if __name__== "__main__":
+    print(f"Text value {value2[0]}: {value2[1]}")
+    print()
+    print("Testing Log Processor...")
+    log_processor = LogProcessor()
 
-
+    print(f"Trying \
+to validate input 'Hello': {log_processor.validate('Hello')}")
+    list3 = [
+        {"log_level": "NOTICE", "log_message": "Connection to server"},
+        {"log_level": "ERROR", "log_message": "Unauthorized access!!"},
+    ]
+    print(f"Processing data: {list3}")
+    log_processor.ingest(list3)
+    print("Extracting 2 values...")
+    value3 = log_processor.output()
+    print(f"Log entry {value3[0]}: {value3[1]}")
+    value3 = log_processor.output()
+    print(f"Log entry {value3[0]}: {value3[1]}")

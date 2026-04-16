@@ -17,19 +17,24 @@ Key concepts demonstrated:
 * Plugin architecture with duck typing
 * Clean and modular system design
 
+* [Class-Diagram (In Lucid chart)](https://lucid.app/lucidchart/f296c209-ea0f-4eaf-af5f-77a629cb30e2/edit?viewport_loc=-331%2C-409%2C2087%2C1151%2C0_0&invitationId=inv_a8584705-0b0d-4a0d-969c-be8ecb2b28df)
 
 ## data_processor.py 
 
 This file implements a modular data processing system using object-oriented design and abstract base classes. It defines a common interface for handling different types of data while allowing each processor to apply its own validation and transformation logic.
 
-The system supports processing:
+* The system supports processing:
 
-Numeric data
-Text data
-Structured log data
+  Numeric data
+  Text data
+  Structured log data
 
 All processors follow a unified workflow:
 validate → ingest → store → output (FIFO)
 
-![Data Processor Workflow](pic/data_stream_class_diagram.jpeg)
+![Data Processor class diagram](pic/DataProcessor_class_diagram.jpeg)
 
+
+## data_stream.py 
+
+![Data stream aggregation realationShip](pic/data_stream_class_diagram.jpeg)
