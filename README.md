@@ -1,4 +1,4 @@
-# code-nexus-data-pipeline
+# Code-nexus-data-pipeline
 Polymorphic data processing pipeline in Python using abstract classes and dynamic routing, with a plugin-based export system (CSV/JSON).
 
 ## Brief 
@@ -17,6 +17,13 @@ Key concepts demonstrated:
 * Plugin architecture with duck typing
 * Clean and modular system design
 
+## Class Diagram 
+
+![Class diagram](pic/class_diagram.png)
+
+
+“output_pipeline → calls output → collects values → sends to process_output → plugin formats (CSV/JSON)”
+
 * [Class-Diagram (In Lucid chart)](https://lucid.app/lucidchart/f296c209-ea0f-4eaf-af5f-77a629cb30e2/edit?viewport_loc=-331%2C-409%2C2087%2C1151%2C0_0&invitationId=inv_a8584705-0b0d-4a0d-969c-be8ecb2b28df)
 
 ## data_processor.py 
@@ -25,9 +32,11 @@ This file implements a modular data processing system using object-oriented desi
 
 * The system supports processing:
 
-  Numeric data
-  Text data
-  Structured log data
+  * Numeric data
+
+  * Text data
+
+  * Structured log data
 
 All processors follow a unified workflow:
 validate → ingest → store → output (FIFO)
@@ -36,6 +45,15 @@ validate → ingest → store → output (FIFO)
 
 ## data_stream.py 
 
-## Class Diagram 
+* Build an adaptive stream processing workflow that can han-
+dle multiple data types simultaneously.
 
-![Class diagram](pic/class_diagram.png)
+* Print the static of each processor handler.
+
+
+## data_pipeline.py
+
+* Print data after using the `self.ouput()` method, in CSV or JSON format, by using duck typing concept -> A concept where an object suitability for a task determined by it's method (behaviour) rather than by it's type or inheritance. 
+It's like overriding but with less strict (if you quack then u are a duck).
+
+
